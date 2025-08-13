@@ -36,6 +36,25 @@ const REDDIT_SOURCES = [
   }
 ];
 
+// Define types for Reddit API response
+interface RedditPost {
+  data: {
+    title: string;
+    permalink: string;
+    created_utc: number;
+    selftext: string;
+    thumbnail: string;
+    stickied: boolean;
+    score: number;
+  };
+}
+
+interface RedditResponse {
+  data: {
+    children: RedditPost[];
+  };
+}
+
 async function fetchRSSFeed(feedUrl: string, sourceName: string): Promise<NewsArticle[]> {
   try {
     const feed = await parser.parseURL(feedUrl);
@@ -65,12 +84,12 @@ async function fetchRedditPosts(redditUrl: string, sourceName: string): Promise<
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     
-    const data = await response.json();
+    const data: RedditResponse = await response.json();
     
     return data.data.children
-      .filter((post: any) => !post.data.stickied && post.data.score > 50)
+      .filter((post: RedditPost) => !post.data.stickied && post.data.score > 50)
       .slice(0, 8)
-      .map((post: any) => ({
+      .map((post: RedditPost) => ({
         source: sourceName,
         title: post.data.title,
         link: `https://reddit.com${post.data.permalink}`,
