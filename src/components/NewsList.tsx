@@ -103,7 +103,7 @@ export function NewsList() {
           No articles found
         </h3>
         <p className="text-muted-foreground mb-4">
-          We couldn't find any news articles at the moment.
+          We couldn&apos;t find any news articles at the moment.
         </p>
         <Button onClick={fetchNews} variant="outline">
           Refresh
